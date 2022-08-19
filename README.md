@@ -9,7 +9,7 @@
 	Hetzner
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-As an information here is the list some of the specs and the prices. I recommended specs for shardnet  8CPU/16GB/500GB SSD.
+As an information here is the list some of the specs and the prices for DigitalOcean. I recommended specs for shardnet  8CPU/16GB/500GB SSD.
 
 ![ch5_4](https://user-images.githubusercontent.com/105415280/185484855-52d1ff67-0d46-4403-ab43-b8c9447423ed.PNG)
 
@@ -348,4 +348,63 @@ File content must be in the following pattern:
 Start the valdator now
 ```
 target/release/neard run
+```
+
+Mount Staking Pool
+
+```
+near call factory.shardnet.near create_staking_pool '{"staking_pool_id": "<pool name>", "owner_id": "<accountId>", "stake_public_key": "<public key>", "reward_fee_fraction": {"numerator": 5, "denominator": 100}, "code_hash":"DD428g9eqLL8fWUxv8QSpVFzyHi1Qd16P8ephYCTmMSZ"}' --accountId="<accountId>" --amount=30 --gas=300000000000000
+```
+
+Amount must be at least 30 Near
+
+For changin any parameter for pool use below comnad
+
+```
+near call <pool_id> update_reward_fee_fraction '{"reward_fee_fraction": {"numerator": 1, "denominator": 100}}' --accountId <account_id> --gas=300000000000000
+```
+
+Here are some useful commands 
+
+For stake
+```
+near call <pool_id> deposit_and_stake --amount <amount> --accountId <accountId> --gas=300000000000000
+```
+For  unstake:
+```
+near call <pool_id> unstake '{"amount": "<amount yoctoNEAR>"}' --accountId <accountId> --gas=300000000000000
+```
+
+```
+near call <pool_id> unstake_all --accountId <accountId> --gas=300000000000000
+```
+For withdraw
+```
+near call <pool_id> withdraw '{"amount": "<amount yoctoNEAR>"}' --accountId <accountId> --gas=300000000000000
+```
+
+```
+near call <pool_id> withdraw_all --accountId <accountId> --gas=300000000000000
+```
+
+For ping
+
+```
+near call <pool_id> ping '{}' --accountId <accountId> --gas=300000000000000
+```
+For learning balances
+```
+near view <pool_id> get_account_total_balance '{"account_id": "<accountId>"}'
+```
+
+```
+near view <pool_id> get_account_staked_balance '{"account_id": "<accountId>"}'
+```
+
+```
+near view <pool_id> get_account_unstaked_balance '{"account_id": "<accountId>"}'
+```
+
+```
+near view <pool_id> is_account_unstaked_balance_available '{"account_id": "<accountId>"}'
 ```
