@@ -247,7 +247,7 @@ Download genesis,
 
 ![image](https://user-images.githubusercontent.com/105415280/185593352-764d1e37-1f00-410c-8c99-90f8f4dc1bd6.png)
 
-At the end of command you wll find config.json`, `node_key.json`, and `genesis.json` under .near directory
+At the end of command you wll find config.json`, `node_key.json`, and `genesis.json` under .near directory. These are important files at the end of all configuration backup them.
 
 ![image](https://user-images.githubusercontent.com/105415280/185593510-2a463b31-6ffd-4219-83cf-4fc0f0c77ed1.png)
 
@@ -264,7 +264,7 @@ wget -O ~/.near/config.json https://s3-us-west-1.amazonaws.com/build.nearprotoco
 
 
 
-thats all we installed the node ,now start it with below command and wait synching ,download headers to 100%
+thats all we installed the node ,now start it with below command and wait synching and downloading headers to 100%
 
 ```
 cd ~/nearcore
@@ -272,5 +272,163 @@ cd ~/nearcore
 ```
 
 ![image](https://user-images.githubusercontent.com/105415280/185594128-6abd448b-a577-4494-add4-5c83f7e55ca8.png)
+
+
+
+Now go to your NEAR-CLI server .Run below commnad
+
+```
+near login
+```
+
+![image](https://user-images.githubusercontent.com/105415280/185598496-f433b78d-75f2-4916-9f01-433711bb1667.png)
+
+You will see a link , copy it to your browser and give full permisson from your wallet. Come back to your console and enter the same your wallet adress. Now we give the NEAR-CLI server to authenticate our wallet.
+
+
+
+
+#####  Check the validator_key.json
+* Run the following command:
+```
+cat ~/.near/validator_key.json
+```
+
+
+> Note: If a validator_key.json is not present, follow these steps to create one
+
+Create a `validator_key.json` 
+
+*   Generate the Key file:
+
+```
+near generate-key <pool_id>
+```
+<pool_id> ---> xx.factory.shardnet.near WHERE xx is you pool name
+
+> Pool will be created at the next task, now you can give the same name as your wallet name  
+For example :  
+wallet name : john.shardnet.near (in future we will call it <accountId>)
+pool name : john.factory.shardnet.near  
+Please use the same pool name for next task "Mount your Staking Pool"
+
+* Copy the file generated to shardnet folder:
+Make sure to replace <pool_id> by your pool name
+```
+cp ~/.near-credentials/shardnet/YOUR_WALLET.json ~/.near/validator_key.json
+```
+* Edit “account_id” => xx.factory.shardnet.near, where xx is your PoolName
+* Change `private_key` to `secret_key`
+
+> Note: The account_id must match the staking pool contract name or you will not be able to sign blocks.\
+
+File content must be in the following pattern:
+```
+{
+  "account_id": "xx.factory.shardnet.near",
+  "public_key": "ed25519:HeaBJ3xLgvZacQWmEctTeUqyfSU4SDEnEwckWxd92W2G",
+  "secret_key": "ed25519:****"
+}
+```
+
+#####  Start the validator node
+
+```
+target/release/neard run
+```
+* Setup Systemd
+Command:
+
+```
+sudo vi /etc/systemd/system/neard.service
+```
+Paste:
+
+```
+[Unit]
+Description=NEARd Daemon Service
+
+[Service]
+Type=simple
+User=<USER>
+#Group=near
+WorkingDirectory=/home/<USER>/.near
+ExecStart=/home/<USER>/nearcore/target/release/neard run
+Restart=on-failure
+RestartSec=30
+KillSignal=SIGINT
+TimeoutStopSec=45
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
+```
+
+> Note: Change USER to your paths
+
+Command:
+
+```
+sudo systemctl enable neard
+```
+Command:
+
+```
+sudo systemctl start neard
+```
+If you need to make a change to service because of an error in the file. It has to be reloaded:
+
+```
+sudo systemctl reload neard
+```
+###### Watch logs
+Command:
+
+```
+journalctl -n 100 -f -u neard
+```
+Make log output in pretty print
+
+Command:
+
+```
+sudo apt install ccze
+```
+View Logs with color
+
+Command:
+
+```
+journalctl -n 100 -f -u neard | ccze -A
+```
+#### Becoming a Validator
+In order to become a validator and enter the validator set, a minimum set of success criteria must be met.
+
+* The node must be fully synced
+* The `validator_key.json` must be in place
+* The contract must be initialized with the public_key in `validator_key.json`
+* The account_id must be set to the staking pool contract id
+* There must be enough delegations to meet the minimum seat price. See the seat price [here](https://explorer.shardnet.near.org/nodes/validators).
+* A proposal must be submitted by pinging the contract
+* Once a proposal is accepted a validator must wait 2-3 epoch to enter the validator set
+* Once in the validator set the validator must produce great than 90% of assigned blocks
+
+Check running status of validator node. If “Validator” is showing up, your pool is selected in the current validators list.
+
+
+## Let's go to challenge 3 🚀
+
+[Mount your Staking Pool](./003.md).
+
+## Update log
+
+Updated 2022-07-13: Creation
+
+Updated 2022-07-13: Creation
+
+Updated 2022-07-18: Snapshot is not required after hardfork
+
+Updated 2022-07-20: Clarified the rewards for solving the challenge
+
 
 
