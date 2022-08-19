@@ -211,86 +211,66 @@ Chose yes
 ![image](https://user-images.githubusercontent.com/105415280/185588160-4c1c24ca-a704-4135-b233-66af4aeab584.png)
 
 Chose 1 and enter
+
 ![image](https://user-images.githubusercontent.com/105415280/185588276-93e9acbc-265d-4d89-a93b-3a436d713e77.png)
 
 
-You will see the following:
-
-![img](./images/rust.png)
-
-Press 1 and press enter.
-
-##### Source the environment
+than use below command and install Rust
 ```
 source $HOME/.cargo/env
 ```
 
-#### Clone `nearcore` project from GitHub
-First, clone the [`nearcore` repository](https://github.com/near/nearcore).
+
+Clone nearcore from github
 
 ```
 git clone https://github.com/near/nearcore
 cd nearcore
-git fetch
+git fetch origin --tags
+git checkout tags/shardnet
 ```
+![image](https://user-images.githubusercontent.com/105415280/185590203-c857495a-106e-41bb-b127-99cf2ddc057d.png)
 
-Checkout to the commit needed. Please refer to the commit defined in [this file](https://github.com/near/stakewars-iii/blob/main/commit.md). 
-```
-git checkout <commit>
-```
-
-#### Compile `nearcore` binary
-In the `nearcore` folder run the following commands:
+while at nearcore folder use below command for bianry, it will take some time , please wait finishing.
 
 ```
 cargo build -p neard --release --features shardnet
 ```
-The binary path is `target/release/neard`. If you are seeing issues, it is possible that cargo command is not found. Compiling `nearcore` binary may take a little while.
 
-#### Initialize working directory
+![image](https://user-images.githubusercontent.com/105415280/185590653-dd6a91da-0521-40b3-ba2c-d79cd52ce2ff.png)
 
-In order to work properly, the NEAR node requires a working directory and a couple of configuration files. Generate the initial required working directory by running:
+Download genesis, 
 
 ```
 ./target/release/neard --home ~/.near init --chain-id shardnet --download-genesis
 ```
 
-![img](./images/initialize.png)
+![image](https://user-images.githubusercontent.com/105415280/185593352-764d1e37-1f00-410c-8c99-90f8f4dc1bd6.png)
 
-This command will create the directory structure and will generate `config.json`, `node_key.json`, and `genesis.json` on the network you have passed. 
+At the end of command you wll find config.json`, `node_key.json`, and `genesis.json` under .near directory
 
-- `config.json` - Configuration parameters which are responsive for how the node will work. The config.json contains needed information for a node to run on the network, how to communicate with peers, and how to reach consensus. Although some options are configurable. In general validators have opted to use the default config.json provided.
+![image](https://user-images.githubusercontent.com/105415280/185593510-2a463b31-6ffd-4219-83cf-4fc0f0c77ed1.png)
 
-- `genesis.json` - A file with all the data the network started with at genesis. This contains initial accounts, contracts, access keys, and other records which represents the initial state of the blockchain. The genesis.json file is a snapshot of the network state at a point in time. In contacts accounts, balances, active validators, and other information about the network. 
 
-- `node_key.json` -  A file which contains a public and private key for the node. Also includes an optional `account_id` parameter which is required to run a validator node (not covered in this doc).
 
-- `data/` -  A folder in which a NEAR node will write it's state.
-
-#### Replace the `config.json`
-
-From the generated `config.json`, there two parameters to modify:
-- `boot_nodes`: If you had not specify the boot nodes to use during init in Step 3, the generated `config.json` shows an empty array, so we will need to replace it with a full one specifying the boot nodes.
-- `tracked_shards`: In the generated `config.json`, this field is an empty. You will have to replace it to `"tracked_shards": [0]`
+Replace config.json by below command
 
 ```
 rm ~/.near/config.json
 wget -O ~/.near/config.json https://s3-us-west-1.amazonaws.com/build.nearprotocol.com/nearcore-deploy/shardnet/config.json
 ```
 
-#### Run the node
-To start your node simply run the following command:
+![image](https://user-images.githubusercontent.com/105415280/185593720-4804696c-ebdc-44f0-a5f6-37acecf35012.png)
+
+
+
+thats all we installed the node ,now start it with below command and wait synching ,download headers to 100%
 
 ```
 cd ~/nearcore
 ./target/release/neard --home ~/.near run
 ```
 
-![img](./images/download.png)
-The node is now running you can see log outputs in your console. Your node should be find peers, download headers to 100%, and then download blocks.
-
-----
-
-
+![image](https://user-images.githubusercontent.com/105415280/185594128-6abd448b-a577-4494-add4-5c83f7e55ca8.png)
 
 
