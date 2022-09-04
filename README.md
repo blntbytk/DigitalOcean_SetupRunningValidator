@@ -283,10 +283,10 @@ Description=NEARd Daemon Service
 
 [Service]
 Type=simple
-User=<USER>
+User=root
 #Group=near
-WorkingDirectory=/home/<USER>/.near
-ExecStart=/home/<USER>/nearcore/target/release/neard run
+WorkingDirectory=/root/.near
+ExecStart=/root/nearcore/target/release/neard run
 Restart=on-failure
 RestartSec=30
 KillSignal=SIGINT
@@ -298,15 +298,15 @@ WantedBy=multi-user.target
 ```
 
 ```
-sudo systemctl enable neard
+systemctl enable neard
 ```
 
 ```
-sudo systemctl start neard
+systemctl start neard
 ```
 
 ```
-sudo apt install ccze
+apt install ccze
 ```
 For logs use below command
 
@@ -340,7 +340,7 @@ nano ~/.near/validator_key.json
 File content must be in the following pattern:
 ```
 {
-  "account_id": "xx.factory.shardnet.near",
+  "account_id": "blntbytk.factory.shardnet.near",
   "public_key": "ed25519:xxyyzzff",
   "secret_key": "ed25519:****"
 }
